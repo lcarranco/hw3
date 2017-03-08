@@ -143,127 +143,15 @@ private:
     Node* head = 0;
     Node* tail = 0;
 };
-class BigNumber
+
+class Postfix_Infix
 {
 public:
-    BigNumber() {}
-    ~BigNumber()
-    {
-        //cout << "BN ~" << endl;
-    }
-
-    BigNumber(string num, int digitsPerNode)
-    {
-        //cout << num << endl;
-        if (num[0] == '-')
-        {
-            isNegative = true;
-            num.erase(num.begin());
-        }
-        int startIndex = num.length() - digitsPerNode;
-        while (startIndex >= 0)
-        {
-            data.push_front(num.substr(startIndex, digitsPerNode));
-            startIndex -= digitsPerNode;
-        }
-        if (startIndex < 0)
-        {
-            data.push_front(num.substr(0, startIndex + digitsPerNode));
-        }
-    }
-    BigNumber(BigNumber const & other)
-    {
-        //cout << "BN copy" << endl;
-        isNegative = other.isNegative;
-        data = other.data;
-    }
-    BigNumber & operator= (BigNumber const & other)
-    {
-        //cout << "BN =" << endl;
-        isNegative = other.isNegative;
-        data = other.data;
-        return *this;
-    }
-    bool operator< (BigNumber const & other) const
-    {
-        BigNumber const & a = *this;
-        BigNumber const & b = other;
-
-        if (a.isNegative && !b.isNegative)
-        {
-            return true;
-        }
-        if (!a.isNegative && b.isNegative)
-        {
-            return false;
-        }
-
-        bool result = false;
-        if (a.data.size() < b.data.size())
-        {
-            //return true;
-            result = true;
-        }
-        else
-            if (a.data.size() > b.data.size())
-            {
-                //return false;
-                result = false;
-            }
-            else
-                if (a.data.size() == b.data.size())
-                {
-                    int index = 0;
-                    while (index < a.data.size())
-                    {
-                        if (a.data.at(index).num < b.data.at(index).num)
-                        {
-                            //return true;
-                            result = true;
-                            break;
-                        }
-                        if (a.data.at(index).num > b.data.at(index).num)
-                        {
-                            //return false;
-                            result = false;
-                            break;
-                        }
-                        if (a.data.at(index).num == b.data.at(index).num)
-                        {
-                            //Go to the next node
-                        }
-                        index++;
-                    }
-                }
-        if (isNegative)
-        {
-            result = !result;
-        }
-        return result;
-    }
-
-    void print(ostream & out) const
-    {
-        if (isNegative)
-        {
-            out << "-";
-        }
-        data.print(out);
-    }
-
-    void swap(BigNumber & other)
-    {
-        std::swap(isNegative, other.isNegative);
-        data.swap(other.data);
-    }
-    // bool operator>= (BigNumber const & other) const
-    // {
-    //     return !operator< (other);
-    // }
+    Postfix_Infix();
+    ~Postfix_Infix();
 
 private:
-    bool isNegative = false;
-    DoubleLinkedList data;
+    
 };
 
 void print(BigNumber *a, int size, ostream & out)
@@ -313,7 +201,7 @@ public:
 
     void swap()
     {
-
+        
     }
 
 private:
@@ -352,6 +240,8 @@ void input(BigNumber *a, string & filename, int digitsPerNode)
     }
 }
 
+
+
 int main(int argc, char* argv[])
 {
     if (argc < 2)
@@ -361,10 +251,7 @@ int main(int argc, char* argv[])
     }
     ArgumentManager am(argc, argv);
     std::string filename = am.get("input");
-    std::string algorithm = am.get("algorithm");
     int digitsPerNode = std::stoi(am.get("digitsPerNode"));
-    std::string outfile = am.get("output");
-    cout << outfile << endl;
 
     //Used for testing on Visual Studio
     //string filename = "1.txt";
@@ -375,10 +262,6 @@ int main(int argc, char* argv[])
     int size = count_lines(filename, digitsPerNode);
     BigNumber *a = new BigNumber[size];
     input(a, filename, digitsPerNode);
-
-    fstream output(outfile, fstream::out);
-    print(a, size, output);
-    output.close();
 
     return 0;
 }
