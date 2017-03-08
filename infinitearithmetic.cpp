@@ -154,15 +154,15 @@ private:
     
 };
 
-void print(BigNumber *a, int size, ostream & out)
-{
-    a[0].print(out);
-    for (int i = 1; i < size; i++)
-    {
-        out << endl;
-        a[i].print(out);
-    }
-}
+// void print(BigNumber *a, int size, ostream & out)
+// {
+//     a[0].print(out);
+//     for (int i = 1; i < size; i++)
+//     {
+//         out << endl;
+//         a[i].print(out);
+//     }
+// }
 
 class Stack
 {
@@ -223,24 +223,22 @@ int count_lines(string & filename, int digitsPerNode)
     return counter;
 }
 
-void input(BigNumber *a, string & filename, int digitsPerNode)
-{
-    std::ifstream ifs(filename.c_str());
+// void input(BigNumber *a, string & filename, int digitsPerNode)
+// {
+//     std::ifstream ifs(filename.c_str());
 
-    int counter = 0;
-    while (!ifs.eof())
-    {
-        string line;
-        ifs >> line;
-        if (line.size() != 0)
-        {
-            a[counter] = BigNumber(line, digitsPerNode);
-            counter++;
-        }
-    }
-}
-
-
+//     int counter = 0;
+//     while (!ifs.eof())
+//     {
+//         string line;
+//         ifs >> line;
+//         if (line.size() != 0)
+//         {
+//             a[counter] = BigNumber(line, digitsPerNode);
+//             counter++;
+//         }
+//     }
+// }
 
 int main(int argc, char* argv[])
 {
@@ -260,8 +258,8 @@ int main(int argc, char* argv[])
     //string outfile = "out.txt";
 
     int size = count_lines(filename, digitsPerNode);
-    BigNumber *a = new BigNumber[size];
-    input(a, filename, digitsPerNode);
+    // BigNumber *a = new BigNumber[size];
+    // input(a, filename, digitsPerNode);
 
     return 0;
 }
