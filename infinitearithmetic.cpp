@@ -8,6 +8,7 @@
 #include <sstream>
 #include <ostream>
 #include <map>
+#include <cassert>
 #include "ArgumentManager.h"
 
 using namespace std;
@@ -144,16 +145,6 @@ private:
     Node* tail = 0;
 };
 
-class Postfix_Infix
-{
-public:
-    Postfix_Infix();
-    ~Postfix_Infix();
-
-private:
-    
-};
-
 // void print(BigNumber *a, int size, ostream & out)
 // {
 //     a[0].print(out);
@@ -164,49 +155,232 @@ private:
 //     }
 // }
 
-class Stack
+template <class Type>
+
+class stackType
+
 {
-public:
-    Stack();
-    ~Stack();
-    bool empty() const
-    {
-
-    }
-
-    int size() const
-    {
-
-    }
-
-    Stack & top()
-    {
-
-    }
-
-    void push()
-    {
-
-    }
-
-    Stack emplace()
-    {
-
-    }
-
-    void pop()
-    {
-
-    }
-
-    void swap()
-    {
-        
-    }
-
-private:
-    
+    private :
+        int maxStackSize;
+        int stackTop;
+        Type *list;
+    public :
+        void initializeStack();
+        bool isFullStack() const;
+        bool isEmptyStack() const;
+        void push( const Type& );
+        void pop();
+        Type top() const;
+        stackType(int = 20);
+        ~stackType();
 };
+
+template <class Type>
+
+void stackType<Type>::initializeStack()
+{
+  stackTop = 0;
+}    //   end function initializeStack
+
+
+template <class Type>
+
+bool stackType<Type>::isFullStack() const
+{
+    return ( stackTop == maxStackSize );
+}    //   end function isFullStack
+
+//     check for stack empty
+template <class Type>
+
+bool stackType<Type>::isEmptyStack() const
+{
+   return ( stackTop == 0 );
+}    //   end function isEmptyStack
+
+//     insert an element into stack
+
+template <class Type>
+
+void stackType<Type>::push( const Type& newItem )
+{
+  if ( !isFullStack() )
+     {
+        list[ stackTop ] = newItem;
+        stackTop++;
+      }
+       else
+            cout << "\n\tCan not add to a full stack";
+}
+
+//     delete an element from the stack
+
+template <class Type>
+
+void stackType<Type>::pop()
+{
+       if ( !isEmptyStack() )
+              stackTop--;
+       else
+              cout << "\n\tCan not remove from an empty stack";
+}    //   end function pop
+
+//     return the value of stack-top
+
+template <class Type>
+
+Type stackType<Type>::top() const
+{
+       assert( stackTop != 0 );
+       return list[ stackTop - 1 ];
+
+}    //   end function top
+
+//     constructor for the class stackType
+
+template <class Type>
+
+stackType<Type>::stackType( int stackSize )
+{
+       if ( stackSize <= 0 )
+       {
+              cout << "Invalid size";
+              stackSize = 10;
+       }      //     end if
+       else
+              maxStackSize = stackSize;
+
+       stackTop = 0;
+       list = new Type[ maxStackSize ];
+
+}    //   end constructor stackType
+
+//     destructor for the class stackType
+
+template <class Type>
+
+stackType<Type>::~stackType()
+{
+       delete[] list;
+}    //   end destructor stackType
+
+class infixToPostfix
+{
+    string infix;
+    string postfix;
+
+public:
+    void showPostfix();
+    bool isOperator(const char c);
+    int precedence( const char op1, const char op2 );
+    void getInfix(string infixString)
+    {
+        infix=infixString;
+    }
+
+    void showInfix()
+    {
+        cout << "\n\tInfix expression: " <<infix;
+    }
+};
+
+bool infixToPostfix::isOperator(const char c)
+{
+       if ( ( c == '+' ) || ( c == '-' ) || ( c == '*' ) ||( c == '/' ) || ( c == '^' ) || ( c == '%' ) )
+              return true;
+       else
+              return false;
+}
+
+int infixToPostfix::precedence( const char op1, const char op2 )
+{
+       int pre1=0, pre2=0; //declare variables to compare the precedence
+
+       if ( ( op1 == '^' ) || ( op2 == '^' ) )
+              cout << "Exponentiation was not considered for precedence. \n\tThe program may result in abnormal output of Postfix exp.";
+       if ( ( op1 == '+' ) || ( op1 == '-' ) )     //low precedence
+              pre1 = 0;
+      else if ((op1 == '*') || (op1 == '/') || (op1 == '%'))
+                     pre1 = 1;                   //high precedence
+       if ( ( op2 == '+' ) || ( op2 == '-' ) )  //low precedence
+                 pre2 = 0;
+       else if ((op2 == '*') || (op2 == '/') || (op2 == '%'))
+                     pre2 = 1;                  //     high precedence
+
+//     compare and return the precedence of op1 & op2
+       if ( pre1 == pre2 )  //     equal precedence of op1 & op2
+              return 0;
+       else
+              if ( pre1 > pre2 )   //higher precedence of op1 over op2
+                     return 1;
+              else          //     lower precedence of op1 over op2
+                     return -1;
+}
+
+//     conversion of infix arithmetic exp into postfix exp
+void infixToPostfix::showPostfix()
+{
+      stackType<char> myStack; //     A Stack of characters
+      string pfx = "";
+      infix.pop_back();
+      infix.append( ")" );//append a right parenthesis ')' to the end of infix
+      myStack.push( '(' ); //push the left parenthesis onto the stack
+       unsigned int i = 0;
+       do   //loop through the infix array
+   {
+          if ( isOperator ( infix[i] ) ) //If the operator is an element in the string
+          {
+             if ( isOperator( myStack.top() ) )  //when the top of the stack is an operator
+             {
+                  if (precedence(infix[i], myStack.top())==0)    //find the precedence of the operator
+                   {
+                          pfx = pfx + myStack.top(); //     place the element in postfix and pop the stack
+                          myStack.pop();
+                   }
+                   else
+                        if (precedence(infix[i],
+                            myStack.top())==1)
+                          {
+                                 myStack.push( infix[i] ); //push into stack the infix elem when higher precedence
+                                 i++;
+                          }
+                          else
+                          {
+                                 pfx = pfx + myStack.top(); //place the element in postfix & pop the stack
+                                 myStack.pop();
+                          }
+                   }
+                   else
+                   {
+                         myStack.push( infix[ i ] );//push onto stack when top of stack  is not an operator
+                         i++;
+                   }
+            }
+              else   //when the infix element is not an operator
+                   if (infix[ i ] == ')')
+                   {
+                   while (myStack.top() != '(') //get the elements from the stack
+                   {
+                      pfx = pfx + myStack.top();
+                      myStack.pop();
+                   }
+                   myStack.pop();  //pop the '(' from the stack
+                   i++;
+             }
+             else
+                   if ( infix[ i ] == '(' )
+                   {
+                      myStack.push( infix[i] ); //neither operator nor operand push onto stack
+                      i++;
+                   }      //end if
+                   else
+                   {
+                      pfx = pfx + infix[i]; //In case of operands, copy the operands  from infix to postfix
+                      i++;
+                   }
+             }while ( i < infix.length());
+        cout << "\n\tPostfix Expression: " << pfx;
+}
 
 int count_lines(string & filename, int digitsPerNode)
 {
@@ -223,43 +397,38 @@ int count_lines(string & filename, int digitsPerNode)
     return counter;
 }
 
-// void input(BigNumber *a, string & filename, int digitsPerNode)
-// {
-//     std::ifstream ifs(filename.c_str());
-
-//     int counter = 0;
-//     while (!ifs.eof())
-//     {
-//         string line;
-//         ifs >> line;
-//         if (line.size() != 0)
-//         {
-//             a[counter] = BigNumber(line, digitsPerNode);
-//             counter++;
-//         }
-//     }
-// }
-
 int main(int argc, char* argv[])
 {
-    if (argc < 2)
+    // if (argc < 2)
+    // {
+    //     //std::cerr("Usage: infinitearithmetic \"input=xyz.txt;digitsPerNode=<number>\"\n");
+    //     return 1;
+    // }
+    // ArgumentManager am(argc, argv);
+    // std::string filename = am.get("input");
+    // int digitsPerNode = std::stoi(am.get("digitsPerNode"));
+    // int size = count_lines(filename, digitsPerNode);
+
+    infixToPostfix  InfixExp;
+    string infix;
+
+    ifstream infile;
+    infile.open("1.txt",ios::in);
+    if (!infile)
     {
-        //std::cerr("Usage: infinitearithmetic \"input=xyz.txt;digitsPerNode=<number>\"\n");
+        cout << "Cannot open input file. Program terminates!!!" << endl;
         return 1;
     }
-    ArgumentManager am(argc, argv);
-    std::string filename = am.get("input");
-    int digitsPerNode = std::stoi(am.get("digitsPerNode"));
+   getline(infile, infix); //reading first line
+   while (infile)
+    {
+      InfixExp.getInfix(infix);
+      InfixExp.showInfix();
+      InfixExp.showPostfix();
+      cout << endl;
+      getline(infile, infix); //reading next line
 
-    //Used for testing on Visual Studio
-    //string filename = "1.txt";
-    //int digitsPerNode = 8;
-    //string algorithm = "quick";
-    //string outfile = "out.txt";
-
-    int size = count_lines(filename, digitsPerNode);
-    // BigNumber *a = new BigNumber[size];
-    // input(a, filename, digitsPerNode);
-
+    }
+    infile.close();
     return 0;
 }
