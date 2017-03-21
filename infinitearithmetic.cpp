@@ -17,12 +17,12 @@ struct Node
 {
     long long num = 0;
     string str;
-    Node* prev = 0;
-    Node* next = 0;
+    Node *prev = 0;
+    Node *next = 0;
 };
 class DoubleLinkedList
 {
-public:
+  public:
     DoubleLinkedList() {}
     // Destructor
     ~DoubleLinkedList()
@@ -35,24 +35,24 @@ public:
     {
         while (head != nullptr)
         {
-            Node* deleteme = head;
+            Node *deleteme = head;
             head = head->next;
             delete deleteme;
         }
     }
 
     // Copy constructor
-    DoubleLinkedList(DoubleLinkedList const & list)
+    DoubleLinkedList(DoubleLinkedList const &list)
     {
         //cout << "DLL copy" << endl;
     }
 
-    DoubleLinkedList & operator=(DoubleLinkedList const & other)
+    DoubleLinkedList &operator=(DoubleLinkedList const &other)
     {
         //cout << "DLL =" << endl;
         clear();
 
-        Node* temp = other.head;
+        Node *temp = other.head;
         while (temp != nullptr)
         {
             push_back(temp->str);
@@ -63,7 +63,7 @@ public:
 
     void push_front(string parted)
     {
-        Node*temp = new Node();
+        Node *temp = new Node();
         temp->str = parted;
         stringstream ss(parted);
         ss >> temp->num;
@@ -82,7 +82,7 @@ public:
 
     void push_back(string parted)
     {
-        Node* temp = new Node();
+        Node *temp = new Node();
         temp->str = parted;
         stringstream ss(parted);
         ss >> temp->num;
@@ -99,9 +99,9 @@ public:
         }
     }
 
-    void print(ostream & out) const
+    void print(ostream &out) const
     {
-        Node* temp = head;
+        Node *temp = head;
         while (temp != nullptr)
         {
             out << temp->str;
@@ -112,7 +112,7 @@ public:
     Node at(int index) const
     {
         int i = 0;
-        Node* temp = head;
+        Node *temp = head;
         while (i != index)
         {
             temp = temp->next;
@@ -124,7 +124,7 @@ public:
     int size() const
     {
         int count = 0;
-        Node* temp = head;
+        Node *temp = head;
         while (temp != 0)
         {
             temp = temp->next;
@@ -133,23 +133,21 @@ public:
         return count;
     }
 
-    void swap(DoubleLinkedList & other)
+    void swap(DoubleLinkedList &other)
     {
-        Node* temp = head;
+        Node *temp = head;
         head = other.head;
         other.head = temp;
     }
 
-private:
-    Node* head = 0;
-    Node* tail = 0;
+  private:
+    Node *head = 0;
+    Node *tail = 0;
 };
-
-
 
 class Bigex
 {
-public:
+  public:
     Bigex() {}
     ~Bigex()
     {
@@ -175,13 +173,13 @@ public:
             data.push_front(expression.substr(0, startIndex + digitsPerNode));
         }
     }
-    Bigex(Bigex const & other)
+    Bigex(Bigex const &other)
     {
         //cout << "BN copy" << endl;
         isNegative = other.isNegative;
         data = other.data;
     }
-    Bigex & operator= (Bigex const & other)
+    Bigex &operator=(Bigex const &other)
     {
         //cout << "BN =" << endl;
         isNegative = other.isNegative;
@@ -189,7 +187,7 @@ public:
         return *this;
     }
 
-    void print(ostream & out) const
+    void print(ostream &out) const
     {
         if (isNegative)
         {
@@ -198,13 +196,13 @@ public:
         data.print(out);
     }
 
-    void swap(Bigex & other)
+    void swap(Bigex &other)
     {
         std::swap(isNegative, other.isNegative);
         data.swap(other.data);
     }
 
-private:
+  private:
     bool isNegative = false;
     DoubleLinkedList data;
 };
@@ -224,57 +222,57 @@ template <class Type>
 class stackType
 
 {
-    private :
-        int maxStackSize;
-        int stackTop;
-        Type *list;
-    public :
-        void initializeStack();
-        bool isFullStack() const;
-        bool isEmptyStack() const;
-        void push( const Type& );
-        void pop();
-        Type top() const;
-        stackType(int = 20);
-        ~stackType();
+  private:
+    int maxStackSize;
+    int stackTop;
+    Type *list;
+
+  public:
+    void initializeStack();
+    bool isFullStack() const;
+    bool isEmptyStack() const;
+    void push(const Type &);
+    void pop();
+    Type top() const;
+    stackType(int = 20);
+    ~stackType();
 };
 
 template <class Type>
 
 void stackType<Type>::initializeStack()
 {
-  stackTop = 0;
-}    //   end function initializeStack
-
+    stackTop = 0;
+} //   end function initializeStack
 
 template <class Type>
 
 bool stackType<Type>::isFullStack() const
 {
-    return ( stackTop == maxStackSize );
-}    //   end function isFullStack
+    return (stackTop == maxStackSize);
+} //   end function isFullStack
 
 //     check for stack empty
 template <class Type>
 
 bool stackType<Type>::isEmptyStack() const
 {
-   return ( stackTop == 0 );
-}    //   end function isEmptyStack
+    return (stackTop == 0);
+} //   end function isEmptyStack
 
 //     insert an element into stack
 
 template <class Type>
 
-void stackType<Type>::push( const Type& newItem )
+void stackType<Type>::push(const Type &newItem)
 {
-  if ( !isFullStack() )
-     {
-        list[ stackTop ] = newItem;
+    if (!isFullStack())
+    {
+        list[stackTop] = newItem;
         stackTop++;
-      }
-       else
-            cout << "\n\tCan not add to a full stack";
+    }
+    else
+        cout << "\n\tCan not add to a full stack";
 }
 
 //     delete an element from the stack
@@ -283,11 +281,11 @@ template <class Type>
 
 void stackType<Type>::pop()
 {
-       if ( !isEmptyStack() )
-              stackTop--;
-       else
-              cout << "\n\tCan not remove from an empty stack";
-}    //   end function pop
+    if (!isEmptyStack())
+        stackTop--;
+    else
+        cout << "\n\tCan not remove from an empty stack";
+} //   end function pop
 
 //     return the value of stack-top
 
@@ -295,29 +293,29 @@ template <class Type>
 
 Type stackType<Type>::top() const
 {
-       assert( stackTop != 0 );
-       return list[ stackTop - 1 ];
+    assert(stackTop != 0);
+    return list[stackTop - 1];
 
-}    //   end function top
+} //   end function top
 
 //     constructor for the class stackType
 
 template <class Type>
 
-stackType<Type>::stackType( int stackSize )
+stackType<Type>::stackType(int stackSize)
 {
-       if ( stackSize <= 0 )
-       {
-              cout << "Invalid size";
-              stackSize = 10;
-       }      //     end if
-       else
-              maxStackSize = stackSize;
+    if (stackSize <= 0)
+    {
+        cout << "Invalid size";
+        stackSize = 10;
+    } //     end if
+    else
+        maxStackSize = stackSize;
 
-       stackTop = 0;
-       list = new Type[ maxStackSize ];
+    stackTop = 0;
+    list = new Type[maxStackSize];
 
-}    //   end constructor stackType
+} //   end constructor stackType
 
 //     destructor for the class stackType
 
@@ -325,133 +323,129 @@ template <class Type>
 
 stackType<Type>::~stackType()
 {
-       delete[] list;
-}    //   end destructor stackType
+    delete[] list;
+} //   end destructor stackType
 
 class infixToPostfix
 {
     string infix;
     string postfix;
 
-public:
+  public:
     void showPostfix();
     bool isOperator(const char c);
-    int precedence( const char op1, const char op2 );
+    int precedence(const char op1, const char op2);
     void getInfix(string infixString)
     {
-        infix=infixString;
+        infix = infixString;
     }
 
     void showInfix()
     {
-        cout << "\n\tInfix expression: " <<infix;
+        cout << "\n\tInfix expression: " << infix;
     }
 };
 
 bool infixToPostfix::isOperator(const char c)
 {
-       if ( ( c == '+' ) || ( c == '-' ) || ( c == '*' ) ||( c == '/' ) || ( c == '^' ) || ( c == '%' ) )
-              return true;
-       else
-              return false;
+    if ((c == '+') || (c == '-') || (c == '*') || (c == '/') || (c == '^') || (c == '%'))
+        return true;
+    else
+        return false;
 }
 
-int infixToPostfix::precedence( const char op1, const char op2 )
+int infixToPostfix::precedence(const char op1, const char op2)
 {
-       int pre1=0, pre2=0; //declare variables to compare the precedence
+    int pre1 = 0, pre2 = 0; //declare variables to compare the precedence
 
-       if ( ( op1 == '^' ) || ( op2 == '^' ) )
-              cout << "Exponentiation was not considered for precedence. \n\tThe program may result in abnormal output of Postfix exp.";
-       if ( ( op1 == '+' ) || ( op1 == '-' ) )     //low precedence
-              pre1 = 0;
-      else if ((op1 == '*') || (op1 == '/') || (op1 == '%'))
-                     pre1 = 1;                   //high precedence
-       if ( ( op2 == '+' ) || ( op2 == '-' ) )  //low precedence
-                 pre2 = 0;
-       else if ((op2 == '*') || (op2 == '/') || (op2 == '%'))
-                     pre2 = 1;                  //     high precedence
+    if ((op1 == '^') || (op2 == '^'))
+        cout << "Exponentiation was not considered for precedence. \n\tThe program may result in abnormal output of Postfix exp.";
+    if ((op1 == '+') || (op1 == '-')) //low precedence
+        pre1 = 0;
+    else if ((op1 == '*') || (op1 == '/') || (op1 == '%'))
+        pre1 = 1;                     //high precedence
+    if ((op2 == '+') || (op2 == '-')) //low precedence
+        pre2 = 0;
+    else if ((op2 == '*') || (op2 == '/') || (op2 == '%'))
+        pre2 = 1; //     high precedence
 
-//     compare and return the precedence of op1 & op2
-       if ( pre1 == pre2 )  //     equal precedence of op1 & op2
-              return 0;
-       else
-              if ( pre1 > pre2 )   //higher precedence of op1 over op2
-                     return 1;
-              else          //     lower precedence of op1 over op2
-                     return -1;
+    //     compare and return the precedence of op1 & op2
+    if (pre1 == pre2) //     equal precedence of op1 & op2
+        return 0;
+    else if (pre1 > pre2) //higher precedence of op1 over op2
+        return 1;
+    else //     lower precedence of op1 over op2
+        return -1;
 }
 
 //     conversion of infix arithmetic exp into postfix exp
 void infixToPostfix::showPostfix()
 {
-      stackType<char> myStack; //     A Stack of characters
-      string pfx = "";
-      //infix.pop_back();
-      infix.append( ")" );//append a right parenthesis ')' to the end of infix
-      myStack.push( '(' ); //push the left parenthesis onto the stack
-       unsigned int i = 0;
-       do   //loop through the infix array
-   {
-          if ( isOperator ( infix[i] ) ) //If the operator is an element in the string
-          {
-             if ( isOperator( myStack.top() ) )  //when the top of the stack is an operator
-             {
-                  if (precedence(infix[i], myStack.top())==0)    //find the precedence of the operator
-                   {
-                          pfx = pfx + myStack.top(); //     place the element in postfix and pop the stack
-                          myStack.pop();
-                          pfx += ' ';
-                   }
-                   else
-                        if (precedence(infix[i],
-                            myStack.top())==1)
-                          {
-                                 myStack.push( infix[i] ); //push into stack the infix elem when higher precedence
-                                 pfx += ' ';
-                                 i++;
-                          }
-                          else
-                          {
-                                 pfx = pfx + myStack.top(); //place the element in postfix & pop the stack
-                                 myStack.pop();
-                                 pfx += ' '; // add whitespace for each operation on the stack.
-                          }
-                   }
-                   else
-                   {
-                         myStack.push( infix[ i ] );//push onto stack when top of stack  is not an operator
-                         pfx += ' ';
-                         i++;
-                   }
+    stackType<char> myStack; //     A Stack of characters
+    string pfx = "";
+    //infix.pop_back();
+    infix.append(")"); //append a right parenthesis ')' to the end of infix
+    myStack.push('('); //push the left parenthesis onto the stack
+    unsigned int i = 0;
+    do //loop through the infix array
+    {
+        if (isOperator(infix[i])) //If the operator is an element in the string
+        {
+            if (isOperator(myStack.top())) //when the top of the stack is an operator
+            {
+                if (precedence(infix[i], myStack.top()) == 0) //find the precedence of the operator
+                {
+                    pfx = pfx + myStack.top(); //     place the element in postfix and pop the stack
+                    myStack.pop();
+                    pfx += ' ';
+                }
+                else if (precedence(infix[i], myStack.top()) == 1)
+                {
+                    myStack.push(infix[i]); //push into stack the infix elem when higher precedence
+                    pfx += ' ';
+                    i++;
+                }
+                else
+                {
+                    pfx = pfx + myStack.top(); //place the element in postfix & pop the stack
+                    myStack.pop();
+                    pfx += ' '; // add whitespace for each operation on the stack.
+                }
             }
-              else   //when the infix element is not an operator
-                   if (infix[ i ] == ')')
-                   {
-                   while (myStack.top() != '(') //get the elements from the stack
-                   {
-                      pfx = pfx + myStack.top();
-                      myStack.pop();
-                   }
-                   myStack.pop();  //pop the '(' from the stack
-                   i++;
-             }
-             else
-                   if ( infix[ i ] == '(' )
-                   {
-                      myStack.push( infix[i] ); //neither operator nor operand push onto stack
-                      pfx += ' ';
-                      i++;
-                   }      //end if
-                   else
-                   {
-                      pfx = pfx + infix[i]; //In case of operands, copy the operands  from infix to postfix
-                      i++;
-                   }
-             }while ( i < infix.length());
-        cout << "\n\tPostfix Expression: " << pfx;
+            else
+            {
+                myStack.push(infix[i]); //push onto stack when top of stack  is not an operator
+                pfx += ' ';
+                i++;
+            }
+        }
+        else //when the infix element is not an operator
+            if (infix[i] == ')')
+        {
+            while (myStack.top() != '(') //get the elements from the stack
+            {
+                pfx = pfx + myStack.top();
+                myStack.pop();
+            }
+            myStack.pop(); //pop the '(' from the stack
+            i++;
+        }
+        else if (infix[i] == '(')
+        {
+            myStack.push(infix[i]); //neither operator nor operand push onto stack
+            pfx += ' ';
+            i++;
+        } //end if
+        else
+        {
+            pfx = pfx + infix[i]; //In case of operands, copy the operands  from infix to postfix
+            i++;
+        }
+    } while (i < infix.length());
+    cout << "\n\tPostfix Expression: " << pfx;
 }
 
-int count_lines(string & filename, int digitsPerNode)
+int count_lines(string &filename, int digitsPerNode)
 {
     std::ifstream ifs(filename.c_str());
 
@@ -466,7 +460,7 @@ int count_lines(string & filename, int digitsPerNode)
     return counter;
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     // if (argc < 2)
     // {
@@ -478,25 +472,24 @@ int main(int argc, char* argv[])
     // int digitsPerNode = std::stoi(am.get("digitsPerNode"));
     // int size = count_lines(filename, digitsPerNode);
 
-    infixToPostfix  InfixExp;
+    infixToPostfix InfixExp;
     string infix;
 
     ifstream infile;
-    infile.open("1.txt",ios::in);
+    infile.open("infixData.txt", ios::in);
     if (!infile)
     {
         cout << "Cannot open input file. Program terminates!!!" << endl;
         return 1;
     }
-   getline(infile, infix); //reading first line
-   while (infile)
+    getline(infile, infix); //reading first line
+    while (infile)
     {
-      InfixExp.getInfix(infix);
-      InfixExp.showInfix();
-      InfixExp.showPostfix();
-      cout << endl;
-      getline(infile, infix); //reading next line
-
+        InfixExp.getInfix(infix);
+        InfixExp.showInfix();
+        InfixExp.showPostfix();
+        cout << endl;
+        getline(infile, infix); //reading next line
     }
     infile.close();
     return 0;
