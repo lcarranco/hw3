@@ -145,7 +145,71 @@ private:
     Node* tail = 0;
 };
 
-// void print(BigNumber *a, int size, ostream & out)
+
+
+class Bigex
+{
+public:
+    Bigex() {}
+    ~Bigex()
+    {
+        //cout << "BN ~" << endl;
+    }
+
+    Bigex(string expression, int digitsPerNode)
+    {
+        //cout << num << endl;
+        if (expression[0] == '-')
+        {
+            isNegative = true;
+            expression.erase(expression.begin());
+        }
+        int startIndex = expression.length() - digitsPerNode;
+        while (startIndex >= 0)
+        {
+            data.push_front(expression.substr(startIndex, digitsPerNode));
+            startIndex -= digitsPerNode;
+        }
+        if (startIndex < 0)
+        {
+            data.push_front(expression.substr(0, startIndex + digitsPerNode));
+        }
+    }
+    Bigex(Bigex const & other)
+    {
+        //cout << "BN copy" << endl;
+        isNegative = other.isNegative;
+        data = other.data;
+    }
+    Bigex & operator= (Bigex const & other)
+    {
+        //cout << "BN =" << endl;
+        isNegative = other.isNegative;
+        data = other.data;
+        return *this;
+    }
+
+    void print(ostream & out) const
+    {
+        if (isNegative)
+        {
+            out << "-";
+        }
+        data.print(out);
+    }
+
+    void swap(Bigex & other)
+    {
+        std::swap(isNegative, other.isNegative);
+        data.swap(other.data);
+    }
+
+private:
+    bool isNegative = false;
+    DoubleLinkedList data;
+};
+
+// void print(Bigex *a, int size, ostream & out)
 // {
 //     a[0].print(out);
 //     for (int i = 1; i < size; i++)
@@ -322,7 +386,7 @@ void infixToPostfix::showPostfix()
 {
       stackType<char> myStack; //     A Stack of characters
       string pfx = "";
-      infix.pop_back();
+      //infix.pop_back();
       infix.append( ")" );//append a right parenthesis ')' to the end of infix
       myStack.push( '(' ); //push the left parenthesis onto the stack
        unsigned int i = 0;
@@ -336,23 +400,27 @@ void infixToPostfix::showPostfix()
                    {
                           pfx = pfx + myStack.top(); //     place the element in postfix and pop the stack
                           myStack.pop();
+                          pfx += ' ';
                    }
                    else
                         if (precedence(infix[i],
                             myStack.top())==1)
                           {
                                  myStack.push( infix[i] ); //push into stack the infix elem when higher precedence
+                                 pfx += ' ';
                                  i++;
                           }
                           else
                           {
                                  pfx = pfx + myStack.top(); //place the element in postfix & pop the stack
                                  myStack.pop();
+                                 pfx += ' '; // add whitespace for each operation on the stack.
                           }
                    }
                    else
                    {
                          myStack.push( infix[ i ] );//push onto stack when top of stack  is not an operator
+                         pfx += ' ';
                          i++;
                    }
             }
@@ -371,6 +439,7 @@ void infixToPostfix::showPostfix()
                    if ( infix[ i ] == '(' )
                    {
                       myStack.push( infix[i] ); //neither operator nor operand push onto stack
+                      pfx += ' ';
                       i++;
                    }      //end if
                    else
