@@ -145,77 +145,6 @@ class DoubleLinkedList
     Node *tail = 0;
 };
 
-class Bigex
-{
-  public:
-    Bigex() {}
-    ~Bigex()
-    {
-        //cout << "BN ~" << endl;
-    }
-
-    Bigex(string expression, int digitsPerNode)
-    {
-        //cout << num << endl;
-        if (expression[0] == '-')
-        {
-            isNegative = true;
-            expression.erase(expression.begin());
-        }
-        int startIndex = expression.length() - digitsPerNode;
-        while (startIndex >= 0)
-        {
-            data.push_front(expression.substr(startIndex, digitsPerNode));
-            startIndex -= digitsPerNode;
-        }
-        if (startIndex < 0)
-        {
-            data.push_front(expression.substr(0, startIndex + digitsPerNode));
-        }
-    }
-    Bigex(Bigex const &other)
-    {
-        //cout << "BN copy" << endl;
-        isNegative = other.isNegative;
-        data = other.data;
-    }
-    Bigex &operator=(Bigex const &other)
-    {
-        //cout << "BN =" << endl;
-        isNegative = other.isNegative;
-        data = other.data;
-        return *this;
-    }
-
-    void print(ostream &out) const
-    {
-        if (isNegative)
-        {
-            out << "-";
-        }
-        data.print(out);
-    }
-
-    void swap(Bigex &other)
-    {
-        std::swap(isNegative, other.isNegative);
-        data.swap(other.data);
-    }
-
-  private:
-    bool isNegative = false;
-    DoubleLinkedList data;
-};
-
-// void print(Bigex *a, int size, ostream & out)
-// {
-//     a[0].print(out);
-//     for (int i = 1; i < size; i++)
-//     {
-//         out << endl;
-//         a[i].print(out);
-//     }
-// }
 
 template <class Type>
 
@@ -330,7 +259,7 @@ class infixToPostfix
 {
     string infix;
     string postfix;
-
+    DoubleLinkedList data;
   public:
     void showPostfix();
     bool isOperator(const char c);
@@ -395,8 +324,8 @@ void infixToPostfix::showPostfix()
             {
                 if (precedence(infix[i], myStack.top()) == 0) //find the precedence of the operator
                 {
-                    pfx = pfx + myStack.top(); //     place the element in postfix and pop the stack
-                    myStack.pop();
+                    pfx = pfx + myStack.top(); //place the operator in postfix
+                    myStack.pop(); //Pop the stack
                     pfx += ' ';
                 }
                 else if (precedence(infix[i], myStack.top()) == 1)
@@ -443,7 +372,81 @@ void infixToPostfix::showPostfix()
         }
     } while (i < infix.length());
     cout << "\n\tPostfix Expression: " << pfx;
+    postfix = pfx;
+    cout << "postfix " << postfix;
 }
+
+class Bigex
+{
+  public:
+    Bigex() {}
+    ~Bigex()
+    {
+        //cout << "BN ~" << endl;
+    }
+
+    Bigex(string expression, int digitsPerNode)
+    {
+        //cout << num << endl;
+        if (expression[0] == '-')
+        {
+            isNegative = true;
+            expression.erase(expression.begin());
+        }
+        int startIndex = expression.length() - digitsPerNode;
+        while (startIndex >= 0)
+        {
+            data.push_front(expression.substr(startIndex, digitsPerNode));
+            startIndex -= digitsPerNode;
+        }
+        if (startIndex < 0)
+        {
+            data.push_front(expression.substr(0, startIndex + digitsPerNode));
+        }
+    }
+    Bigex(Bigex const &other)
+    {
+        //cout << "BN copy" << endl;
+        isNegative = other.isNegative;
+        data = other.data;
+    }
+    Bigex &operator=(Bigex const &other)
+    {
+        //cout << "BN =" << endl;
+        isNegative = other.isNegative;
+        data = other.data;
+        return *this;
+    }
+
+    void print(ostream &out) const
+    {
+        if (isNegative)
+        {
+            out << "-";
+        }
+        data.print(out);
+    }
+
+    void swap(Bigex &other)
+    {
+        std::swap(isNegative, other.isNegative);
+        data.swap(other.data);
+    }
+
+  private:
+    bool isNegative = false;
+    DoubleLinkedList data;
+};
+
+// void print(Bigex *a, int size, ostream & out)
+// {
+//     a[0].print(out);
+//     for (int i = 1; i < size; i++)
+//     {
+//         out << endl;
+//         a[i].print(out);
+//     }
+// }
 
 int count_lines(string &filename, int digitsPerNode)
 {
