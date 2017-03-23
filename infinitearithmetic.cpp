@@ -405,11 +405,11 @@ void infixToPostfix::showPostfix()
     unsigned int i = 0;
     do //loop through the infix array
     {
-        if((isOperator(infix[i]) && (isOperator(infix[i+1])) == '-'))
+        if(isOperator(infix[i]) && infix[i+1] == '-')
           {
             infix[i+1] = '~';
             }
-        else if((isOperator(infix[i]) && (isOperator(infix[i+1])) == '+'))
+        else if(isOperator(infix[i]) && infix[i+1] == '+')
           {
             //infix.erase(infix.begin() + i + 1);
             infix[i+1] = ' ';
