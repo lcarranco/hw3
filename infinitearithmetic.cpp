@@ -255,6 +255,68 @@ stackType<Type>::~stackType()
     delete[] list;
 } //   end destructor stackType
 
+class Bigex
+{
+  public:
+    Bigex() {}
+    ~Bigex()
+    {
+        //cout << "BN ~" << endl;
+    }
+
+    Bigex(string expression, int digitsPerNode)
+    {
+        //cout << num << endl;
+        if (expression[0] == '-')
+        {
+            isNegative = true;
+            expression.erase(expression.begin());
+        }
+        int startIndex = expression.length() - digitsPerNode;
+        while (startIndex >= 0)
+        {
+            data.push_front(expression.substr(startIndex, digitsPerNode));
+            startIndex -= digitsPerNode;
+        }
+        if (startIndex < 0)
+        {
+            data.push_front(expression.substr(0, startIndex + digitsPerNode));
+        }
+    }
+    Bigex(Bigex const &other)
+    {
+        //cout << "BN copy" << endl;
+        isNegative = other.isNegative;
+        data = other.data;
+    }
+    Bigex &operator=(Bigex const &other)
+    {
+        //cout << "BN =" << endl;
+        isNegative = other.isNegative;
+        data = other.data;
+        return *this;
+    }
+
+    void print(ostream &out) const
+    {
+        if (isNegative)
+        {
+            out << "-";
+        }
+        data.print(out);
+    }
+
+    void swap(Bigex &other)
+    {
+        std::swap(isNegative, other.isNegative);
+        data.swap(other.data);
+    }
+
+  private:
+    bool isNegative = false;
+    DoubleLinkedList data;
+};
+
 class infixToPostfix
 {
     string infix;
@@ -264,6 +326,7 @@ class infixToPostfix
     void showPostfix();
     bool isOperator(const char c);
     int precedence(const char op1, const char op2);
+    void convert_sign();
     void getInfix(string infixString)
     {
         infix = infixString;
@@ -307,12 +370,35 @@ int infixToPostfix::precedence(const char op1, const char op2)
         return -1;
 }
 
+void infixToPostfix::convert_sign()
+{
+    for(int i = 0; i < infix.length() - 1; i++)
+    {
+        if(infix[i] == '+' && infix[i + 1] == '+')
+        {
+            infix.erase(infix.begin() + i);
+        }
+        else if(infix[i] == '-' && infix[i + 1] == '-')
+        {
+            infix.erase(infix.begin() + i);
+            infix[i + 1] = '+';
+        }
+        else if(infix[i] == '+' && infix[i + 1] == '-')
+        {
+            infix.erase(infix.begin() + i);
+        }
+        else if(infix[i] == '-' && infix[i + 1] == '+')
+        {
+            infix.erase(infix.begin() + i + 1);
+        }
+    }
+}
+
 //     conversion of infix arithmetic exp into postfix exp
 void infixToPostfix::showPostfix()
 {
-    stackType<char> myStack; //     A Stack of characters
+    stackType<char> myStack; //A Stack of characters
     string pfx = "";
-    //infix.pop_back();
     infix.append(")"); //append a right parenthesis ')' to the end of infix
     myStack.push('('); //push the left parenthesis onto the stack
     unsigned int i = 0;
@@ -374,68 +460,6 @@ void infixToPostfix::showPostfix()
     cout << "\n\tPostfix Expression: " << pfx;
 }
 
-class Bigex
-{
-  public:
-    Bigex() {}
-    ~Bigex()
-    {
-        //cout << "BN ~" << endl;
-    }
-
-    Bigex(string expression, int digitsPerNode)
-    {
-        //cout << num << endl;
-        if (expression[0] == '-')
-        {
-            isNegative = true;
-            expression.erase(expression.begin());
-        }
-        int startIndex = expression.length() - digitsPerNode;
-        while (startIndex >= 0)
-        {
-            data.push_front(expression.substr(startIndex, digitsPerNode));
-            startIndex -= digitsPerNode;
-        }
-        if (startIndex < 0)
-        {
-            data.push_front(expression.substr(0, startIndex + digitsPerNode));
-        }
-    }
-    Bigex(Bigex const &other)
-    {
-        //cout << "BN copy" << endl;
-        isNegative = other.isNegative;
-        data = other.data;
-    }
-    Bigex &operator=(Bigex const &other)
-    {
-        //cout << "BN =" << endl;
-        isNegative = other.isNegative;
-        data = other.data;
-        return *this;
-    }
-
-    void print(ostream &out) const
-    {
-        if (isNegative)
-        {
-            out << "-";
-        }
-        data.print(out);
-    }
-
-    void swap(Bigex &other)
-    {
-        std::swap(isNegative, other.isNegative);
-        data.swap(other.data);
-    }
-
-  private:
-    bool isNegative = false;
-    DoubleLinkedList data;
-    infixToPostfix exp;
-};
 
 // void print(Bigex *a, int size, ostream & out)
 // {
@@ -478,7 +502,7 @@ int main(int argc, char *argv[])
     string infix;
 
     ifstream infile;
-    infile.open("infixData.txt", ios::in);
+    infile.open("8.txt", ios::in);
     if (!infile)
     {
         cout << "Cannot open input file. Program terminates!!!" << endl;
@@ -489,6 +513,7 @@ int main(int argc, char *argv[])
     {
         InfixExp.getInfix(infix);
         InfixExp.showInfix();
+        InfixExp.convert_sign();
         InfixExp.showPostfix();
         cout << endl;
         getline(infile, infix); //reading next line
