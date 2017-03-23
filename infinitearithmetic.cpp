@@ -145,7 +145,6 @@ class DoubleLinkedList
     Node *tail = 0;
 };
 
-
 template <class Type>
 
 class stackType
@@ -322,6 +321,7 @@ class infixToPostfix
     string infix;
     string postfix;
     DoubleLinkedList data;
+
   public:
     void showPostfix();
     bool isOperator(const char c);
@@ -405,15 +405,15 @@ void infixToPostfix::showPostfix()
     unsigned int i = 0;
     do //loop through the infix array
     {
-        if(isOperator(infix[i]) && infix[i+1] == '-')
-          {
-            infix[i+1] = '~';
-            }
-        else if(isOperator(infix[i]) && infix[i+1] == '+')
-          {
+        if (isOperator(infix[i]) && infix[i + 1] == '-')
+        {
+            infix[i + 1] = '~';
+        }
+        else if (isOperator(infix[i]) && infix[i + 1] == '+')
+        {
             //infix.erase(infix.begin() + i + 1);
-            infix[i+1] = ' ';
-          }
+            infix[i + 1] = ' ';
+        }
         else if (isOperator(infix[i])) //If the operator is an element in the string
         {
             if (!myStack.isEmptyStack() && isOperator(myStack.top())) //when the top of the stack is an operator
@@ -421,7 +421,7 @@ void infixToPostfix::showPostfix()
                 if (precedence(infix[i], myStack.top()) == 0) //find the precedence of the operator
                 {
                     pfx = pfx + myStack.top(); //place the operator in postfix
-                    myStack.pop(); //Pop the stack
+                    myStack.pop();             //Pop the stack
                     pfx += ' ';
                 }
                 else if (precedence(infix[i], myStack.top()) == 1)
@@ -458,12 +458,13 @@ void infixToPostfix::showPostfix()
         else if (infix[i] == '(')
         {
             myStack.push(infix[i]); //neither operator nor operand push onto stack
-            if(infix[i+1] == '~') {
-                pfx+= '~';
-
+            if (infix[i + 1] == '~')
+            {
+                pfx += '~';
             }
-            else if(infix[i+1] == '+') {
-              infix.erase(infix.begin() + i + 1);
+            else if (infix[i + 1] == '+')
+            {
+                infix.erase(infix.begin() + i + 1);
             }
             pfx += ' ';
             i++;
@@ -476,7 +477,6 @@ void infixToPostfix::showPostfix()
     } while (i < infix.length());
     cout << "\n\tPostfix Expression: " << pfx;
 }
-
 
 // void print(Bigex *a, int size, ostream & out)
 // {
