@@ -66,7 +66,7 @@ class DoubleLinkedList
         Node *temp = new Node();
         temp->str = parted;
         stringstream ss(parted);
-        ss >> temp->num;    
+        ss >> temp->num;
         if (head == 0)
         {
             head = temp;
@@ -340,7 +340,8 @@ class infixToPostfix
 
 bool infixToPostfix::isOperator(const char c)
 {
-    if ((c == '+') || (c == '-') || (c == '*') || (c == '/') || (c == '^') || (c == '%'))
+
+    if ((c == '+') || (c == '-') || (c == '*') || (c == '/') || (c == '('))
         return true;
     else
         return false;
@@ -370,29 +371,29 @@ int infixToPostfix::precedence(const char op1, const char op2)
         return -1;
 }
 
-void infixToPostfix::convert_sign()
-{
-    for(int i = 0; i < infix.length() - 1; i++)
-    {
-        if(infix[i] == '+' && infix[i + 1] == '+')
-        {
-            infix.erase(infix.begin() + i);
-        }
-        else if(infix[i] == '-' && infix[i + 1] == '-')
-        {
-            infix.erase(infix.begin() + i);
-            infix[i + 1] = '+';
-        }
-        else if(infix[i] == '+' && infix[i + 1] == '-')
-        {
-            infix.erase(infix.begin() + i);
-        }
-        else if(infix[i] == '-' && infix[i + 1] == '+')
-        {
-            infix.erase(infix.begin() + i + 1);
-        }
-    }
-}
+// void infixToPostfix::convert_sign()
+// {
+//     for(int i = 0; i < infix.length() - 1; i++)
+//     {
+//         if(infix[i] == '+' && infix[i + 1] == '+')
+//         {
+//             infix.erase(infix.begin() + i);
+//         }
+//         else if(infix[i] == '-' && infix[i + 1] == '-')
+//         {
+//             infix.erase(infix.begin() + i);
+//             infix[i + 1] = '+';
+//         }
+//         else if(infix[i] == '+' && infix[i + 1] == '-')
+//         {
+//             infix.erase(infix.begin() + i);
+//         }
+//         else if(infix[i] == '-' && infix[i + 1] == '+')
+//         {
+//             infix.erase(infix.begin() + i + 1);
+//         }
+//     }
+// }
 
 //     conversion of infix arithmetic exp into postfix exp
 void infixToPostfix::showPostfix()
@@ -404,7 +405,15 @@ void infixToPostfix::showPostfix()
     unsigned int i = 0;
     do //loop through the infix array
     {
-        if (isOperator(infix[i])) //If the operator is an element in the string
+        if((isOperator(infix[i]) && isOperator(infix[i+1])) == '-')
+          {
+            infix[i+1] = '~';
+            }
+        else if((isOperator(infix[i]) && isOperator(infix[i+1])) == '+')
+          {
+            infix.erase(infix.begin() + i + 1);
+          }
+        else if (isOperator(infix[i])) //If the operator is an element in the string
         {
             if (isOperator(myStack.top())) //when the top of the stack is an operator
             {
@@ -440,6 +449,7 @@ void infixToPostfix::showPostfix()
             while (myStack.top() != '(') //get the elements from the stack
             {
                 pfx = pfx + myStack.top();
+
                 myStack.pop();
             }
             myStack.pop(); //pop the '(' from the stack
@@ -448,6 +458,13 @@ void infixToPostfix::showPostfix()
         else if (infix[i] == '(')
         {
             myStack.push(infix[i]); //neither operator nor operand push onto stack
+            if(infix[i+1] == '-') {
+                pfx+= '-';
+
+            }
+            else if(infix[i+1] == '+') {
+              infix.erase(infix.begin() + i + 1);
+            }
             pfx += ' ';
             i++;
         } //end if
@@ -502,7 +519,7 @@ int main(int argc, char *argv[])
     string infix;
 
     ifstream infile;
-    infile.open("8.txt", ios::in);
+    infile.open("7.txt", ios::in);
     if (!infile)
     {
         cout << "Cannot open input file. Program terminates!!!" << endl;
@@ -513,7 +530,7 @@ int main(int argc, char *argv[])
     {
         InfixExp.getInfix(infix);
         InfixExp.showInfix();
-        InfixExp.convert_sign();
+        //InfixExp.convert_sign();
         InfixExp.showPostfix();
         cout << endl;
         getline(infile, infix); //reading next line
