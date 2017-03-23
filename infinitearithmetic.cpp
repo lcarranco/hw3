@@ -66,7 +66,7 @@ class DoubleLinkedList
         Node *temp = new Node();
         temp->str = parted;
         stringstream ss(parted);
-        ss >> temp->num;
+        ss >> temp->num;    
         if (head == 0)
         {
             head = temp;
@@ -372,8 +372,6 @@ void infixToPostfix::showPostfix()
         }
     } while (i < infix.length());
     cout << "\n\tPostfix Expression: " << pfx;
-    postfix = pfx;
-    cout << "postfix " << postfix;
 }
 
 class Bigex
@@ -436,6 +434,7 @@ class Bigex
   private:
     bool isNegative = false;
     DoubleLinkedList data;
+    infixToPostfix exp;
 };
 
 // void print(Bigex *a, int size, ostream & out)
