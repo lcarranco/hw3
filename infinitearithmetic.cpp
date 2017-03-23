@@ -326,7 +326,7 @@ class infixToPostfix
     void showPostfix();
     bool isOperator(const char c);
     int precedence(const char op1, const char op2);
-    void convert_sign();
+    //void convert_sign();
     void getInfix(string infixString)
     {
         infix = infixString;
@@ -405,17 +405,18 @@ void infixToPostfix::showPostfix()
     unsigned int i = 0;
     do //loop through the infix array
     {
-        if((isOperator(infix[i]) && isOperator(infix[i+1])) == '-')
+        if((isOperator(infix[i]) && (isOperator(infix[i+1])) == '-'))
           {
             infix[i+1] = '~';
             }
-        else if((isOperator(infix[i]) && isOperator(infix[i+1])) == '+')
+        else if((isOperator(infix[i]) && (isOperator(infix[i+1])) == '+'))
           {
-            infix.erase(infix.begin() + i + 1);
+            //infix.erase(infix.begin() + i + 1);
+            infix[i+1] = ' ';
           }
         else if (isOperator(infix[i])) //If the operator is an element in the string
         {
-            if (isOperator(myStack.top())) //when the top of the stack is an operator
+            if (!myStack.isEmptyStack() && isOperator(myStack.top())) //when the top of the stack is an operator
             {
                 if (precedence(infix[i], myStack.top()) == 0) //find the precedence of the operator
                 {
@@ -443,10 +444,9 @@ void infixToPostfix::showPostfix()
                 i++;
             }
         }
-        else //when the infix element is not an operator
-            if (infix[i] == ')')
+        else if (infix[i] == ')')
         {
-            while (myStack.top() != '(') //get the elements from the stack
+            while (!myStack.isEmptyStack() && myStack.top() != '(') //get the elements from the stack
             {
                 pfx = pfx + myStack.top();
 
@@ -458,8 +458,8 @@ void infixToPostfix::showPostfix()
         else if (infix[i] == '(')
         {
             myStack.push(infix[i]); //neither operator nor operand push onto stack
-            if(infix[i+1] == '-') {
-                pfx+= '-';
+            if(infix[i+1] == '~') {
+                pfx+= '~';
 
             }
             else if(infix[i+1] == '+') {
