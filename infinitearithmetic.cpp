@@ -259,28 +259,33 @@ stackType<Type>::~stackType()
 
 class Bigex
 {
-  public:
+public:
     Bigex() {}
     ~Bigex()
     {
         //cout << "BN ~" << endl;
     }
 
-    Bigex(string expression, int digitsPerNode): digitsPerNode(digitsPerNode)
+    Bigex(string expression, int digitsPerNode)
+        : digitsPerNode(digitsPerNode)
     {
-        if (expression[0] == '-')
+        if(expression[0] == '-')
         {
             isNegative = true;
             expression.erase(expression.begin());
         }
-        int startIndex = expression.length() - digitsPerNode;
-        while (startIndex >= 0)
+        int startIndex = expression.size() - digitsPerNode;
+        // BUG: an extra empty node is being added
+        // FIX: swap the = for next two statements
+        while(startIndex > 0)
         {
+            //cout << "exp " << expression.substr(startIndex, digitsPerNode) << endl;
             data.push_front(expression.substr(startIndex, digitsPerNode));
             startIndex -= digitsPerNode;
         }
-        if (startIndex < 0)
+        if(startIndex <= 0)
         {
+            //cout << "exp " << expression.substr(0, startIndex + digitsPerNode) << endl;
             data.push_front(expression.substr(0, startIndex + digitsPerNode));
         }
     }
@@ -302,67 +307,117 @@ class Bigex
 
     Bigex operator+(Bigex const &other)
     {
-        Bigex const & a = *this;
-        Bigex const & b = other;
+        Bigex const & bigexA = *this;
+        Bigex const & bigexB = other;
         Bigex result;
-        if (!a.isNegative && b.isNegative)
+        if(!bigexA.isNegative && bigexB.isNegative)
         {
-            // return a - b;
+            // return bigexA - bigexB;
         }
-        if (a.isNegative && !b.isNegative)
+        if(bigexA.isNegative && !bigexB.isNegative)
         {
-            // return b - a;
+            // return bigexB - bigexA;
         }
-        if (a.isNegative && b.isNegative)
+        if(bigexA.isNegative && bigexB.isNegative)
         {
             result.isNegative = true;
         }
         int rollover = 0;
-        int indexA = a.data.size() - 1;
-        int indexB = b.data.size() - 1;
-        while (indexA >= 0 && indexB >= 0)
+        int indexA = bigexA.data.size() - 1;
+        int indexB = bigexB.data.size() - 1;
+
+        // add all nodes together
+        while(indexA > -1 || indexB > -1)
         {
-            int num = a.data.at(indexA).num + b.data.at(indexB).num + rollover;
+            int a = 0;
+            int b = 0;
+
+            if(indexA > -1)
+            {
+                a = bigexA.data.at(indexA).num;
+                indexA--;
+            }
+            if(indexB > -1)
+            {
+                b = bigexB.data.at(indexB).num;
+                indexB--;
+            }
+
+            long long num = a + b + rollover;
             rollover = num / pow(10, digitsPerNode);
             num = num % (int)pow(10, digitsPerNode);
+
             string str;
             stringstream ss;
             ss << num;
-			ss >> str;
+            ss >> str;
+            // this says if we aren't on the last node, pad the string
+            if(rollover > 0 || indexA > -1 || indexB > -1)
+            {
+                padzeros(str);
+            }
             result.data.push_front(str);
-            indexA--;
-            indexB--;
         }
-        while (indexA >= 0)
+        // add a node for the carry if necessary
+        if(rollover > 0)
         {
-            int num = a.data.at(indexA).num + rollover;
-            rollover = num / pow(10, digitsPerNode);
-            num = num % (int)pow(10, digitsPerNode);
-			string str;
-			stringstream ss;
-			ss << num;
-			ss >> str;
-			result.data.push_front(str);
-            indexA--;
+            string str;
+            stringstream ss;
+            ss << rollover;
+            ss >> str;
+            result.data.push_front(str);
         }
-        while (indexB >= 0)
-        {
-            int num = b.data.at(indexB).num + rollover;
-            rollover = num / pow(10, digitsPerNode);
-            num = num % (int)pow(10, digitsPerNode);
-			string str;
-			stringstream ss;
-			ss << num;
-			ss >> str;
-			result.data.push_front(str);
-            indexB--;
-        }
+
+        //while(indexA >= 0 && indexB >= 0)
+        //{
+        //    // the problem is, big numbers are usually created with a string
+        //    // but in here, we create it based on adding two other nums
+        //    // the nums of course don't have leading zeros, unlike strings
+        //    // so we need to padd zeros into the str
+        //    long long num = bigexA.data.at(indexA).num + b.data.at(indexB).num + rollover;
+        //    rollover = num / pow(10, digitsPerNode);
+        //    num = num % (int)pow(10, digitsPerNode);
+        //    // the best way to solve this problem would be to create a zero-padding function
+        //    // to pad the string with leading zeros
+        //    string str;
+        //    stringstream ss;
+        //    ss << num;
+        //    ss >> str;
+        //    result.data.push_front(str);
+        //    indexA--;
+        //    indexB--;
+        //}
+        //while(indexA >= 0)
+        //{
+        //    long long num = a.data.at(indexA).num + rollover;
+        //    rollover = num / pow(10, digitsPerNode);
+        //    num = num % (int)pow(10, digitsPerNode);
+        //    string str;
+        //    stringstream ss;
+        //    ss << num;
+        //    ss >> str;
+        //    result.data.push_front(str);
+        //    indexA--;
+        //}
+        //while(indexB >= 0)
+        //{
+        //    long long num = b.data.at(indexB).num + rollover;
+        //    rollover = num / pow(10, digitsPerNode);
+        //    num = num % (int)pow(10, digitsPerNode);
+        //    string str;
+        //    stringstream ss;
+        //    ss << num;
+        //    ss >> str;
+        //    result.data.push_front(str);
+        //    indexB--;
+        //}
+
         return result;
     }
 
     void print(ostream &out) const
     {
-        if (isNegative)
+        if(isNegative)
         {
             out << "-";
         }
@@ -375,7 +430,13 @@ class Bigex
         data.swap(other.data);
     }
 
-  private:
+private:
+    void padzeros(string & str)
+    {
+        // create a new string with the proper amount of zeros
+        string pad(digitsPerNode - str.size(), '0');
+        str = pad + str;
+    }
     bool isNegative = false;
     DoubleLinkedList data;
     int digitsPerNode;
