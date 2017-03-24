@@ -221,7 +221,10 @@ template <class Type>
 
 Type stackType<Type>::top() const
 {
-    assert(stackTop != 0);
+	if (stackTop == 0){
+		cout << "here" << endl;
+	}
+		assert(stackTop != 0);
     return list[stackTop - 1];
 
 } //   end function top
@@ -263,7 +266,7 @@ class Bigex
         //cout << "BN ~" << endl;
     }
 
-    Bigex(string expression, int digitsPerNode)
+    Bigex(string expression, int digitsPerNode): digitsPerNode(digitsPerNode)
     {
         if (expression[0] == '-')
         {
@@ -286,13 +289,75 @@ class Bigex
         //cout << "BN copy" << endl;
         isNegative = other.isNegative;
         data = other.data;
+        digitsPerNode = other.digitsPerNode;
     }
     Bigex &operator=(Bigex const &other)
     {
         //cout << "BN =" << endl;
         isNegative = other.isNegative;
         data = other.data;
+        digitsPerNode = other.digitsPerNode;
         return *this;
+    }
+
+    Bigex operator+(Bigex const &other)
+    {
+        Bigex const & a = *this;
+        Bigex const & b = other;
+        Bigex result;
+        if (!a.isNegative && b.isNegative)
+        {
+            // return a - b;
+        }
+        if (a.isNegative && !b.isNegative)
+        {
+            // return b - a;
+        }
+        if (a.isNegative && b.isNegative)
+        {
+            result.isNegative = true;
+        }
+        int rollover = 0;
+        int indexA = a.data.size() - 1;
+        int indexB = b.data.size() - 1;
+        while (indexA >= 0 && indexB >= 0)
+        {
+            int num = a.data.at(indexA).num + b.data.at(indexB).num + rollover;
+            rollover = num / pow(10, digitsPerNode);
+            num = num % (int)pow(10, digitsPerNode);
+            string str;
+            stringstream ss;
+            ss << num;
+			ss >> str;
+            result.data.push_front(str);
+            indexA--;
+            indexB--;
+        }
+        while (indexA >= 0)
+        {
+            int num = a.data.at(indexA).num + rollover;
+            rollover = num / pow(10, digitsPerNode);
+            num = num % (int)pow(10, digitsPerNode);
+			string str;
+			stringstream ss;
+			ss << num;
+			ss >> str;
+			result.data.push_front(str);
+            indexA--;
+        }
+        while (indexB >= 0)
+        {
+            int num = b.data.at(indexB).num + rollover;
+            rollover = num / pow(10, digitsPerNode);
+            num = num % (int)pow(10, digitsPerNode);
+			string str;
+			stringstream ss;
+			ss << num;
+			ss >> str;
+			result.data.push_front(str);
+            indexB--;
+        }
+        return result;
     }
 
     void print(ostream &out) const
@@ -313,6 +378,7 @@ class Bigex
   private:
     bool isNegative = false;
     DoubleLinkedList data;
+    int digitsPerNode;
 };
 
 class infixToPostfix
@@ -341,35 +407,42 @@ class infixToPostfix
         string str;
         stringstream ss(postfix);
         stackType<Bigex> myStack;
-        while (ss.good())
-        {
-            ss >> str;
-            if (str.length() == 1 && isOperator(str[0]))
-            {
-                char op = str[0];
-                Bigex operand1 = myStack.top();
-                myStack.pop();
-                Bigex operand2 = myStack.top();
-                myStack.pop();
-                if (op == '+')
-                {
-                    myStack.push(operand1 + operand2);
-                }
-                else if (op == '-')
-                {
-                    myStack.push(operand1 - operand2);
-                }
-                else if (op == '*')
-                {
-                    myStack.push(operand1 * operand2);
-                }
-            }
-            else if(str.length() > 1)
-            {
-                myStack.push(Bigex(str, digitsPerNode));
-            }
+		while (ss.good())
+		{
+			ss >> str;
+			if (str.size() == 0)
+			{
+				continue;
+			}
+			if (str.size() == 1 && isOperator(str[0]))
+			{
+				char op = str[0];
+				Bigex operand1 = myStack.top();
+				myStack.pop();
+				Bigex operand2 = myStack.top();
+				myStack.pop();
+
+				if (op == '+')
+				{
+					myStack.push(operand1 + operand2);
+				}
+				else if (op == '-')
+				{
+					// myStack.push(operand1 - operand2);
+				}
+				else if (op == '*')
+				{
+					// myStack.push(operand1 * operand2);
+				}
+			}
+			else
+			{
+				myStack.push(Bigex(str, digitsPerNode));
+			}
         }
-        myStack.top().print(cout);
+		cout << "\tResult ";
+		myStack.top().print(cout);
+		cout << endl;
     }
 };
 
@@ -494,7 +567,7 @@ void infixToPostfix::showPostfix()
             i++;
         }
     } while (i < infix.length());
-    cout << "\n\tPostfix Expression: " << pfx;
+	cout << "\n\tPostfix Expression: " << pfx << endl;
     postfix = pfx;
 }
 
@@ -525,6 +598,7 @@ int count_lines(string &filename, int digitsPerNode)
 
 int main(int argc, char *argv[])
 {
+    int digitsPerNode = 3;
     // if (argc < 2)
     // {
     //     //std::cerr("Usage: infinitearithmetic \"input=xyz.txt;digitsPerNode=<number>\"\n");
@@ -532,14 +606,14 @@ int main(int argc, char *argv[])
     // }
     // ArgumentManager am(argc, argv);
     // std::string filename = am.get("input");
-    int digitsPerNode = std::stoi(am.get("digitsPerNode"));
+    // int digitsPerNode = std::stoi(am.get("digitsPerNode"));
     // int size = count_lines(filename, digitsPerNode);
 
     infixToPostfix InfixExp;
     string infix;
 
     ifstream infile;
-    infile.open("8.txt", ios::in);
+    infile.open("10.txt", ios::in);
     if (!infile)
     {
         cout << "Cannot open input file. Program terminates!!!" << endl;
@@ -552,8 +626,7 @@ int main(int argc, char *argv[])
         InfixExp.showInfix();
         //InfixExp.convert_sign();
         InfixExp.showPostfix();
-        cout << endl;
-        evaluatePostfix(digitsPerNode);
+		InfixExp.evaluatePostfix(digitsPerNode);
         getline(infile, infix); //reading next line
     }
     infile.close();
