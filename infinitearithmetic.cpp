@@ -341,7 +341,7 @@ class infixToPostfix
 bool infixToPostfix::isOperator(const char c)
 {
 
-    if ((c == '+') || (c == '-') || (c == '*') || (c == '/') || (c == '('))
+    if ((c == '+') || (c == '-') || (c == '*') || (c == '/'))
         return true;
     else
         return false;
@@ -371,30 +371,6 @@ int infixToPostfix::precedence(const char op1, const char op2)
         return -1;
 }
 
-// void infixToPostfix::convert_sign()
-// {
-//     for(int i = 0; i < infix.length() - 1; i++)
-//     {
-//         if(infix[i] == '+' && infix[i + 1] == '+')
-//         {
-//             infix.erase(infix.begin() + i);
-//         }
-//         else if(infix[i] == '-' && infix[i + 1] == '-')
-//         {
-//             infix.erase(infix.begin() + i);
-//             infix[i + 1] = '+';
-//         }
-//         else if(infix[i] == '+' && infix[i + 1] == '-')
-//         {
-//             infix.erase(infix.begin() + i);
-//         }
-//         else if(infix[i] == '-' && infix[i + 1] == '+')
-//         {
-//             infix.erase(infix.begin() + i + 1);
-//         }
-//     }
-// }
-
 //     conversion of infix arithmetic exp into postfix exp
 void infixToPostfix::showPostfix()
 {
@@ -403,6 +379,10 @@ void infixToPostfix::showPostfix()
     infix.append(")"); //append a right parenthesis ')' to the end of infix
     myStack.push('('); //push the left parenthesis onto the stack
     unsigned int i = 0;
+    if((infix[i]) == '-')
+    {
+        infix[i] = '~';
+    }
     do //loop through the infix array
     {
         if (isOperator(infix[i]) && infix[i + 1] == '-')
@@ -411,36 +391,32 @@ void infixToPostfix::showPostfix()
         }
         else if (isOperator(infix[i]) && infix[i + 1] == '+')
         {
-            //infix.erase(infix.begin() + i + 1);
-            infix[i + 1] = ' ';
+            infix.erase(infix.begin() + i + 1);
         }
         else if (isOperator(infix[i])) //If the operator is an element in the string
         {
+            pfx += ' ';
             if (!myStack.isEmptyStack() && isOperator(myStack.top())) //when the top of the stack is an operator
             {
                 if (precedence(infix[i], myStack.top()) == 0) //find the precedence of the operator
                 {
                     pfx = pfx + myStack.top(); //place the operator in postfix
                     myStack.pop();             //Pop the stack
-                    pfx += ' ';
                 }
                 else if (precedence(infix[i], myStack.top()) == 1)
                 {
                     myStack.push(infix[i]); //push into stack the infix elem when higher precedence
-                    pfx += ' ';
                     i++;
                 }
                 else
                 {
                     pfx = pfx + myStack.top(); //place the element in postfix & pop the stack
                     myStack.pop();
-                    pfx += ' '; // add whitespace for each operation on the stack.
                 }
             }
             else
             {
                 myStack.push(infix[i]); //push onto stack when top of stack  is not an operator
-                pfx += ' ';
                 i++;
             }
         }
@@ -448,8 +424,8 @@ void infixToPostfix::showPostfix()
         {
             while (!myStack.isEmptyStack() && myStack.top() != '(') //get the elements from the stack
             {
+                pfx += ' ';            
                 pfx = pfx + myStack.top();
-
                 myStack.pop();
             }
             myStack.pop(); //pop the '(' from the stack
@@ -458,23 +434,38 @@ void infixToPostfix::showPostfix()
         else if (infix[i] == '(')
         {
             myStack.push(infix[i]); //neither operator nor operand push onto stack
-            if (infix[i + 1] == '~')
+            if (infix[i + 1] == '-')
             {
-                pfx += '~';
+                infix.erase(infix.begin() + i + 1);
+                pfx += '-';
             }
             else if (infix[i + 1] == '+')
             {
                 infix.erase(infix.begin() + i + 1);
+                pfx += '+';
             }
-            pfx += ' ';
             i++;
         } //end if
         else
         {
-            pfx = pfx + infix[i]; //In case of operands, copy the operands  from infix to postfix
+            if (infix[i] == '~')
+            {
+                pfx += '-';
+            }
+            else
+            {
+                pfx = pfx + infix[i]; //In case of operands, copy the operands  from infix to postfix
+            }
             i++;
         }
     } while (i < infix.length());
+    // for (int i = 0; i < pfx.length(); i++)
+    // {
+    //     if (pfx[i] == '(')
+    //     {
+    //         pfx.erase(pfx.begin() + i);
+    //     }
+    // }
     cout << "\n\tPostfix Expression: " << pfx;
 }
 
@@ -519,7 +510,7 @@ int main(int argc, char *argv[])
     string infix;
 
     ifstream infile;
-    infile.open("7.txt", ios::in);
+    infile.open("8.txt", ios::in);
     if (!infile)
     {
         cout << "Cannot open input file. Program terminates!!!" << endl;
