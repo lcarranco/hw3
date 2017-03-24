@@ -265,7 +265,6 @@ class Bigex
 
     Bigex(string expression, int digitsPerNode)
     {
-        //cout << num << endl;
         if (expression[0] == '-')
         {
             isNegative = true;
@@ -335,6 +334,42 @@ class infixToPostfix
     void showInfix()
     {
         cout << "\n\tInfix expression: " << infix;
+    }
+
+    void evaluatePostfix(int digitsPerNode)
+    {
+        string str;
+        stringstream ss(postfix);
+        stackType<Bigex> myStack;
+        while (ss.good())
+        {
+            ss >> str;
+            if (str.length() == 1 && isOperator(str[0]))
+            {
+                char op = str[0];
+                Bigex operand1 = myStack.top();
+                myStack.pop();
+                Bigex operand2 = myStack.top();
+                myStack.pop();
+                if (op == '+')
+                {
+                    myStack.push(operand1 + operand2);
+                }
+                else if (op == '-')
+                {
+                    myStack.push(operand1 - operand2);
+                }
+                else if (op == '*')
+                {
+                    myStack.push(operand1 * operand2);
+                }
+            }
+            else if(str.length() > 1)
+            {
+                myStack.push(Bigex(str, digitsPerNode));
+            }
+        }
+        myStack.top().print(cout);
     }
 };
 
@@ -459,14 +494,8 @@ void infixToPostfix::showPostfix()
             i++;
         }
     } while (i < infix.length());
-    // for (int i = 0; i < pfx.length(); i++)
-    // {
-    //     if (pfx[i] == '(')
-    //     {
-    //         pfx.erase(pfx.begin() + i);
-    //     }
-    // }
     cout << "\n\tPostfix Expression: " << pfx;
+    postfix = pfx;
 }
 
 // void print(Bigex *a, int size, ostream & out)
@@ -503,7 +532,7 @@ int main(int argc, char *argv[])
     // }
     // ArgumentManager am(argc, argv);
     // std::string filename = am.get("input");
-    // int digitsPerNode = std::stoi(am.get("digitsPerNode"));
+    int digitsPerNode = std::stoi(am.get("digitsPerNode"));
     // int size = count_lines(filename, digitsPerNode);
 
     infixToPostfix InfixExp;
@@ -524,6 +553,7 @@ int main(int argc, char *argv[])
         //InfixExp.convert_sign();
         InfixExp.showPostfix();
         cout << endl;
+        evaluatePostfix(digitsPerNode);
         getline(infile, infix); //reading next line
     }
     infile.close();
