@@ -221,6 +221,14 @@ stackType<Type>::~stackType() {
 	delete[] list;
 } //   end destructor stackType
 
+
+
+
+
+
+
+
+
 class Bigex {
 public:
 	Bigex() {}
@@ -263,11 +271,11 @@ public:
 	}
 
 	// Makes copies of Bigex objects, so that they don't change.
-	Bigex operator+(Bigex const &other) const {
-		return Bigex(*this) + Bigex(other);
+	Bigex operator+(Bigex &other) {
+		return add(Bigex(*this), Bigex(other));
 	}
-	Bigex operator-(Bigex const &other) const {
-		return Bigex(*this) - Bigex(other);
+	Bigex operator-(Bigex &other) {
+		return sub(Bigex(*this), Bigex(other));
 	}
 
 	Bigex operator*(Bigex const &other) {
@@ -303,6 +311,7 @@ public:
 			result = add(result, tempresult);
 			indexA--;
 		}
+
 		if (bigexA.isNegative || bigexB.isNegative) {
 			result.isNegative = true;
 		}
@@ -325,7 +334,7 @@ public:
 	}
 
 private:
-	Bigex add(Bigex & bigexA, Bigex & bigexB) {
+	Bigex add(Bigex bigexA, Bigex bigexB) {
 		Bigex result(digitsPerNode);
 
 		// Sign Manipulation
@@ -386,7 +395,7 @@ private:
 		}
 		return result;
 	}
-	Bigex sub(Bigex & bigexA, Bigex & bigexB) {
+	Bigex sub(Bigex bigexA, Bigex bigexB) {
 		Bigex result(digitsPerNode);
 
 		// Sign Manipulation
@@ -408,18 +417,8 @@ private:
 			bigexB.isNegative = false;
 			return sub(bigexB, bigexA);
 		}
-		// algorithm
 
-		int rollover = 0;
-		int indexA = bigexA.data.size() - 1;
-		int indexB = bigexB.data.size() - 1;
-		int ninecom = 0;
-		if (indexA > indexB)
-		{
-			ninecom = (9 * pow(10, indexA - 1)) + 9;
-			cout << ninecom << endl;
-		}
-		return bigexA;
+		// algorithm
 
 	}
 
@@ -458,8 +457,7 @@ public:
 	}
 
 	void showInfix() {
-		//cout << "\n\tInfix expression: " << infix;
-		cout<<infix;
+		cout << "\n\tInfix expression: " << infix;
 	}
 
 	void evaluatePostfix(int digitsPerNode) {
@@ -482,7 +480,7 @@ public:
 					myStack.push(operand1 + operand2);
 				}
 				else if (op == '-') {
-					myStack.push(operand1 - operand2);
+					// myStack.push(operand1 - operand2);
 				}
 				else if (op == '*') {
 					myStack.push(operand1 * operand2);
@@ -492,7 +490,7 @@ public:
 				myStack.push(Bigex(str, digitsPerNode));
 			}
 		}
-		cout << "=";
+		cout << "\tResult ";
 		myStack.top().print(cout);
 		cout << endl;
 	}
@@ -536,7 +534,7 @@ void infixToPostfix::showPostfix() {
 	unsigned int i = 0;
 	if ((infix[i]) == '-')
 		infix[i] = '~';
-	do { //loop through the infix array
+	do { //loop through the infix array 
 		if (isOperator(infix[i]) && infix[i + 1] == '-') {
 			infix[i + 1] = '~';
 		}
@@ -595,7 +593,7 @@ void infixToPostfix::showPostfix() {
 			i++;
 		}
 	} while (i < infix.length());
-	//cout << "\n\tPostfix Expression: " << pfx << endl;
+	cout << "\n\tPostfix Expression: " << pfx << endl;
 	postfix = pfx;
 }
 
@@ -620,21 +618,21 @@ int count_lines(string &filename, int digitsPerNode) {
 }
 
 int main(int argc, char *argv[]) {
-	//int digitsPerNode = 3;
-	if (argc < 2) {
-	    //std::cerr("Usage: infinitearithmetic \"input=xyz.txt;digitsPerNode=<number>\"\n");
-	    return 1;
-	}
-	ArgumentManager am(argc, argv);
-	std::string filename = am.get("input");
-	int digitsPerNode = std::stoi(am.get("digitsPerNode"));
-	//int size = count_lines(filename, digitsPerNode);
+	int digitsPerNode = 3;
+	// if (argc < 2) {
+	//     //std::cerr("Usage: infinitearithmetic \"input=xyz.txt;digitsPerNode=<number>\"\n");
+	//     return 1;
+	// }
+	// ArgumentManager am(argc, argv);
+	// std::string filename = am.get("input");
+	// int digitsPerNode = std::stoi(am.get("digitsPerNode"));
+	// int size = count_lines(filename, digitsPerNode);
 
 	infixToPostfix InfixExp;
 	string infix;
 
 	ifstream infile;
-	infile.open(filename, ios::in);
+	infile.open("11.txt", ios::in);
 	if (!infile) {
 		cout << "Cannot open input file. Program terminates!!!" << endl;
 		return 1;
