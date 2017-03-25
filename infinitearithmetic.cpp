@@ -736,7 +736,7 @@ public:
 
     void showInfix()
     {
-        cout << "\n\tInfix expression: " << infix;
+        cout << infix;
     }
 
     void evaluatePostfix(int digitsPerNode)
@@ -777,7 +777,7 @@ public:
                 myStack.push(Bigex(str, digitsPerNode));
             }
         }
-        cout << "\tResult ";
+        cout << "=";
         myStack.top().print(cout);
         cout << endl;
     }
@@ -825,7 +825,7 @@ void infixToPostfix::showPostfix()
     if((infix[i]) == '-')
         infix[i] = '~';
     do
-    { //loop through the infix array 
+    { //loop through the infix array
         if(isOperator(infix[i]) && infix[i + 1] == '-')
         {
             infix[i + 1] = '~';
@@ -901,7 +901,7 @@ void infixToPostfix::showPostfix()
         }
     }
     while(i < infix.length());
-    cout << "\n\tPostfix Expression: " << pfx << endl;
+    //cout <<pfx << endl;
     postfix = pfx;
 }
 
