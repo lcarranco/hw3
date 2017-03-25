@@ -1,5 +1,14 @@
-#include "stdafx.h"
-
+#include <cmath>
+#include <cstdio>
+#include <iostream>
+#include <cctype>
+#include <fstream>
+#include <iomanip>
+#include <string>
+#include <sstream>
+#include <ostream>
+#include <map>
+#include <cassert>
 #include "ArgumentManager.h"
 
 using namespace std;
@@ -135,7 +144,6 @@ private:
     Node *head = 0;
     Node *tail = 0;
 };
-
 
 template <class Type>
 class stackType
