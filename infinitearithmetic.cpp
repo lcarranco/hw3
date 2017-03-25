@@ -416,10 +416,10 @@ private:
 		int ninecom = 0;
 		if (indexA > indexB)
 		{
-			ninecom = (9 * pow(10, indexA)) + 9;
-			// cout << ninecom << endl; 
+			ninecom = (9 * pow(10, indexA - 1)) + 9;
+			cout << ninecom << endl;
 		}
-
+		return bigexA;
 
 	}
 
