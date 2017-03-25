@@ -274,12 +274,6 @@ public:
 		Bigex const & bigexA = *this;
 		Bigex const & bigexB = other;
 		Bigex result(digitsPerNode);
-		if (bigexA.isNegative || bigexB.isNegative) {
-			result.isNegative = true;
-		}
-		if (bigexA.isNegative && bigexB.isNegative) {
-			result.isNegative = false;
-		}
 
 		int indexA = bigexA.data.size() - 1;
 		long long count = 0;
@@ -308,6 +302,12 @@ public:
 			}
 			result = add(result, tempresult);
 			indexA--;
+		}
+		if (bigexA.isNegative || bigexB.isNegative) {
+			result.isNegative = true;
+		}
+		if (bigexA.isNegative && bigexB.isNegative) {
+			result.isNegative = false;
 		}
 		return result;
 	}
@@ -408,8 +408,18 @@ private:
 			bigexB.isNegative = false;
 			return sub(bigexB, bigexA);
 		}
-
 		// algorithm
+
+		int rollover = 0;
+		int indexA = bigexA.data.size() - 1;
+		int indexB = bigexB.data.size() - 1;
+		int ninecom = 0;
+		if (indexA > indexB)
+		{
+			ninecom = (9 * pow(10, indexA)) + 9;
+			// cout << ninecom << endl; 
+		}
+
 
 	}
 
@@ -624,7 +634,7 @@ int main(int argc, char *argv[]) {
 	string infix;
 
 	ifstream infile;
-	infile.open("10.txt", ios::in);
+	infile.open(filename, ios::in);
 	if (!infile) {
 		cout << "Cannot open input file. Program terminates!!!" << endl;
 		return 1;

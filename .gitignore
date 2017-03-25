@@ -36,3 +36,4 @@
 *.stderr
 *.stdout
 TIMEOUT
+infinitearithmetic
