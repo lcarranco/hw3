@@ -221,14 +221,6 @@ stackType<Type>::~stackType() {
 	delete[] list;
 } //   end destructor stackType
 
-
-
-
-
-
-
-
-
 class Bigex {
 public:
 	Bigex() {}
@@ -271,17 +263,23 @@ public:
 	}
 
 	// Makes copies of Bigex objects, so that they don't change.
-	Bigex operator+(Bigex &other) {
-		return add(Bigex(*this), Bigex(other));
+	Bigex operator+(Bigex const &other) const {
+		return Bigex(*this) + Bigex(other);
 	}
-	Bigex operator-(Bigex &other) {
-		return sub(Bigex(*this), Bigex(other));
+	Bigex operator-(Bigex const &other) const {
+		return Bigex(*this) - Bigex(other);
 	}
 
 	Bigex operator*(Bigex const &other) {
 		Bigex const & bigexA = *this;
 		Bigex const & bigexB = other;
 		Bigex result(digitsPerNode);
+		if (bigexA.isNegative || bigexB.isNegative) {
+			result.isNegative = true;
+		}
+		if (bigexA.isNegative && bigexB.isNegative) {
+			result.isNegative = false;
+		}
 
 		int indexA = bigexA.data.size() - 1;
 		long long count = 0;
@@ -311,13 +309,6 @@ public:
 			result = add(result, tempresult);
 			indexA--;
 		}
-
-		if (bigexA.isNegative || bigexB.isNegative) {
-			result.isNegative = true;
-		}
-		if (bigexA.isNegative && bigexB.isNegative) {
-			result.isNegative = false;
-		}
 		return result;
 	}
 
@@ -334,7 +325,7 @@ public:
 	}
 
 private:
-	Bigex add(Bigex bigexA, Bigex bigexB) {
+	Bigex add(Bigex & bigexA, Bigex & bigexB) {
 		Bigex result(digitsPerNode);
 
 		// Sign Manipulation
@@ -395,7 +386,7 @@ private:
 		}
 		return result;
 	}
-	Bigex sub(Bigex bigexA, Bigex bigexB) {
+	Bigex sub(Bigex & bigexA, Bigex & bigexB) {
 		Bigex result(digitsPerNode);
 
 		// Sign Manipulation
@@ -457,7 +448,8 @@ public:
 	}
 
 	void showInfix() {
-		cout << "\n\tInfix expression: " << infix;
+		//cout << "\n\tInfix expression: " << infix;
+		cout<<infix;
 	}
 
 	void evaluatePostfix(int digitsPerNode) {
@@ -490,7 +482,7 @@ public:
 				myStack.push(Bigex(str, digitsPerNode));
 			}
 		}
-		cout << "\tResult ";
+		cout << "=";
 		myStack.top().print(cout);
 		cout << endl;
 	}
@@ -534,7 +526,7 @@ void infixToPostfix::showPostfix() {
 	unsigned int i = 0;
 	if ((infix[i]) == '-')
 		infix[i] = '~';
-	do { //loop through the infix array 
+	do { //loop through the infix array
 		if (isOperator(infix[i]) && infix[i + 1] == '-') {
 			infix[i + 1] = '~';
 		}
@@ -593,7 +585,7 @@ void infixToPostfix::showPostfix() {
 			i++;
 		}
 	} while (i < infix.length());
-	cout << "\n\tPostfix Expression: " << pfx << endl;
+	//cout << "\n\tPostfix Expression: " << pfx << endl;
 	postfix = pfx;
 }
 
