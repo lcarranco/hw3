@@ -260,9 +260,8 @@ public:
             isNegative = true;
             expression.erase(expression.begin());
         }
+        noleadzeros(expression);
         int startIndex = expression.size() - digitsPerNode;
-        // BUG: an extra empty node is being added
-        // FIX: swap the = for next two statements
         while(startIndex > 0)
         {
             data.push_front(expression.substr(startIndex, digitsPerNode));
@@ -423,6 +422,7 @@ private:
             {
                 padzeros(str);
             }
+
             result.data.push_front(str);
         }
         // add a node for the carry if necessary
@@ -712,11 +712,32 @@ private:
         ss >> str;
         return str;
     }
+    void noleadzeros(string & str)
+    {
+        while(str.size() > 1)
+        {
+            if(str[0] == '0')
+            {
+                str.erase(str.begin());
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
 
     bool isNegative = false;
     DoubleLinkedList data;
     int digitsPerNode;
 };
+
+
+
+
+
+
+
 
 class infixToPostfix
 {
