@@ -263,10 +263,10 @@ public:
 	}
 
 	// Makes copies of Bigex objects, so that they don't change.
-	Bigex operator+(Bigex &other) {
+	Bigex operator+(Bigex const &other) const {
 		return Bigex(*this) + Bigex(other);
 	}
-	Bigex operator-(Bigex &other) {
+	Bigex operator-(Bigex const &other) const {
 		return Bigex(*this) - Bigex(other);
 	}
 
@@ -306,7 +306,7 @@ public:
 				string str = numtostring(rollover);
 				tempresult.data.push_front(str);
 			}
-			result = result + tempresult;
+			result = add(result, tempresult);
 			indexA--;
 		}
 		return result;
@@ -325,9 +325,7 @@ public:
 	}
 
 private:
-	Bigex operator+(Bigex &other) {
-		Bigex & bigexA = *this;
-		Bigex & bigexB = other;
+	Bigex add(Bigex & bigexA, Bigex & bigexB) {
 		Bigex result(digitsPerNode);
 
 		// Sign Manipulation
@@ -335,11 +333,11 @@ private:
 			// A + -B => A - B
 			bigexA.isNegative = false;
 			bigexB.isNegative = false;
-			return bigexA - bigexB;
+			return sub(bigexA, bigexB);
 		}
 		if (bigexA.isNegative && !bigexB.isNegative) {
 			// -A + B => B - A
-			return bigexB - bigexA;
+			return sub(bigexB, bigexA);
 		}
 		if (bigexA.isNegative && bigexB.isNegative) {
 			// -A + -B => -(A + B)
@@ -388,9 +386,7 @@ private:
 		}
 		return result;
 	}
-	Bigex operator-(Bigex &other) {
-		Bigex bigexA(*this);
-		Bigex bigexB(other);
+	Bigex sub(Bigex & bigexA, Bigex & bigexB) {
 		Bigex result(digitsPerNode);
 
 		// Sign Manipulation
@@ -398,19 +394,19 @@ private:
 			// A - -B => A + B
 			bigexA.isNegative = false;
 			bigexB.isNegative = false;
-			return bigexA + bigexB;
+			return add(bigexA, bigexB);
 		}
 		if (bigexA.isNegative && !bigexB.isNegative) {
 			// -A - B => -A + -B
 			bigexA.isNegative = true;
 			bigexB.isNegative = true;
-			return bigexA + bigexB;
+			return add(bigexA, bigexB);
 		}
 		if (bigexA.isNegative && bigexB.isNegative) {
 			// -A - -B => -A + B => B - A
 			bigexA.isNegative = false;
 			bigexB.isNegative = false;
-			return bigexB - bigexA;
+			return sub(bigexB, bigexA);
 		}
 
 		// algorithm
