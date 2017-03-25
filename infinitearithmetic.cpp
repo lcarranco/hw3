@@ -221,6 +221,14 @@ stackType<Type>::~stackType() {
 	delete[] list;
 } //   end destructor stackType
 
+
+
+
+
+
+
+
+
 class Bigex {
 public:
 	Bigex() {}
@@ -263,23 +271,17 @@ public:
 	}
 
 	// Makes copies of Bigex objects, so that they don't change.
-	Bigex operator+(Bigex const &other) const {
-		return Bigex(*this) + Bigex(other);
+	Bigex operator+(Bigex &other) {
+		return add(Bigex(*this), Bigex(other));
 	}
-	Bigex operator-(Bigex const &other) const {
-		return Bigex(*this) - Bigex(other);
+	Bigex operator-(Bigex &other) {
+		return sub(Bigex(*this), Bigex(other));
 	}
 
 	Bigex operator*(Bigex const &other) {
 		Bigex const & bigexA = *this;
 		Bigex const & bigexB = other;
 		Bigex result(digitsPerNode);
-		if (bigexA.isNegative || bigexB.isNegative) {
-			result.isNegative = true;
-		}
-		if (bigexA.isNegative && bigexB.isNegative) {
-			result.isNegative = false;
-		}
 
 		int indexA = bigexA.data.size() - 1;
 		long long count = 0;
@@ -309,6 +311,13 @@ public:
 			result = add(result, tempresult);
 			indexA--;
 		}
+
+		if (bigexA.isNegative || bigexB.isNegative) {
+			result.isNegative = true;
+		}
+		if (bigexA.isNegative && bigexB.isNegative) {
+			result.isNegative = false;
+		}
 		return result;
 	}
 
@@ -325,7 +334,7 @@ public:
 	}
 
 private:
-	Bigex add(Bigex & bigexA, Bigex & bigexB) {
+	Bigex add(Bigex bigexA, Bigex bigexB) {
 		Bigex result(digitsPerNode);
 
 		// Sign Manipulation
@@ -386,7 +395,7 @@ private:
 		}
 		return result;
 	}
-	Bigex sub(Bigex & bigexA, Bigex & bigexB) {
+	Bigex sub(Bigex bigexA, Bigex bigexB) {
 		Bigex result(digitsPerNode);
 
 		// Sign Manipulation
