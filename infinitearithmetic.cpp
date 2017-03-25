@@ -380,6 +380,8 @@ private:
         if(bigexA.isNegative && !bigexB.isNegative)
         {
             // -A + B => B - A
+            bigexA.isNegative = false;
+            bigexB.isNegative = false;
             return sub(bigexB, bigexA);
         }
         if(bigexA.isNegative && bigexB.isNegative)
