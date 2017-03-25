@@ -418,6 +418,8 @@ private:
 			return sub(bigexB, bigexA);
 		}
 
+		
+
 		// algorithm
 
 	}
@@ -637,8 +639,10 @@ int main(int argc, char *argv[]) {
 		cout << "Cannot open input file. Program terminates!!!" << endl;
 		return 1;
 	}
-	getline(infile, infix); //reading first line
-	while (infile) {
+	while (getline(infile, infix)) {
+		if (infix.size() == 0) {
+			continue;
+		}
 		InfixExp.getInfix(infix);
 		InfixExp.showInfix();
 		//InfixExp.convert_sign();
