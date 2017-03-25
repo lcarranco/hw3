@@ -472,7 +472,7 @@ public:
 					myStack.push(operand1 + operand2);
 				}
 				else if (op == '-') {
-					// myStack.push(operand1 - operand2);
+					myStack.push(operand1 - operand2);
 				}
 				else if (op == '*') {
 					myStack.push(operand1 * operand2);
@@ -610,15 +610,15 @@ int count_lines(string &filename, int digitsPerNode) {
 }
 
 int main(int argc, char *argv[]) {
-	int digitsPerNode = 3;
-	// if (argc < 2) {
-	//     //std::cerr("Usage: infinitearithmetic \"input=xyz.txt;digitsPerNode=<number>\"\n");
-	//     return 1;
-	// }
-	// ArgumentManager am(argc, argv);
-	// std::string filename = am.get("input");
-	// int digitsPerNode = std::stoi(am.get("digitsPerNode"));
-	// int size = count_lines(filename, digitsPerNode);
+	//int digitsPerNode = 3;
+	if (argc < 2) {
+	    //std::cerr("Usage: infinitearithmetic \"input=xyz.txt;digitsPerNode=<number>\"\n");
+	    return 1;
+	}
+	ArgumentManager am(argc, argv);
+	std::string filename = am.get("input");
+	int digitsPerNode = std::stoi(am.get("digitsPerNode"));
+	//int size = count_lines(filename, digitsPerNode);
 
 	infixToPostfix InfixExp;
 	string infix;
